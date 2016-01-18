@@ -32,8 +32,7 @@ with open("final_project_dataset.pkl", "r") as data_file:
     data_dict = pickle.load(data_file)
 
     ### Task 2: Remove outliers
-
-
+    data_dict.pop('TOTAL',0)
 
     ### Task 3: Create new feature(s)
     ### Store to my_dataset for easy export below.
@@ -100,9 +99,9 @@ def decisionTree(feature_list, dataset):
     from sklearn import tree
 
     clf = tree.DecisionTreeClassifier()
-    test_classifier(clf, my_dataset, features_list)
+    test_classifier(clf, dataset, feature_list)
     print clf.feature_importances_
-
+    return clf
 
 def KNN(feature_list, dataset):
     from sklearn.pipeline import Pipeline
@@ -112,15 +111,32 @@ def KNN(feature_list, dataset):
     knn = KNeighborsClassifier()
     estimators = [('scale', StandardScaler()), ('knn', knn)]
     clf = Pipeline(estimators)
-    test_classifier(clf, my_dataset, features_list)
+    test_classifier(clf, dataset, feature_list)
 
 
 def GaussianNB(feature_list, dataset):
     from sklearn.naive_bayes import GaussianNB
 
     clf = GaussianNB()
-    test_classifier(clf, my_dataset, features_list)
+    test_classifier(clf, dataset, feature_list)
     #score = clf.
+
+def tuneDT(feature_list, dataset):
+
+
+    from sklearn.neighbors import KNeighborsClassifier
+    from sklearn.grid_search import GridSearchCV
+    from sklearn import tree
+
+    tree_clf = tree.DecisionTreeClassifier()
+    parameters = {'criterion': ('gini', 'entropy'),
+                  'splitter': ('best', 'random')}
+    clf = GridSearchCV(tree_clf, parameters, scoring='accuracy')
+    test_classifier(clf, dataset, feature_list)
+    print '###best_params'
+    print clf.best_params_
+    return clf.best_estimator_
+
 
 
 ### Task 5: Tune your classifier to achieve better than .3 precision and recall 
@@ -131,6 +147,8 @@ def GaussianNB(feature_list, dataset):
 ### http://scikit-learn.org/stable/modules/generated/sklearn.cross_validation.StratifiedShuffleSplit.html
 
 # Example starting point. Try investigating other evaluation techniques!
+
+
     from sklearn.cross_validation import train_test_split
 
     features_train, features_test, labels_train, labels_test = \
@@ -140,7 +158,9 @@ def GaussianNB(feature_list, dataset):
 ### check your results. You do not need to change anything below, but make sure
 ### that the version of poi_id.py that you submit can be run on its own and
 ### generates the necessary .pkl files for validating your results.
-
+if __name__ == '__main__':
+    clf = decisionTree(features_list,my_dataset)
+    clf = tuneDT(features_list,my_dataset)
     dump_classifier_and_data(clf, my_dataset, features_list)
 
 

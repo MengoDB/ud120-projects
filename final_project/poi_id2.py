@@ -267,4 +267,4 @@ from sklearn.naive_bayes import GaussianNB
 clf = GaussianNB()
 test_classifier(clf, my_dataset, features_list)
 ### Dump your classifier, dataset, and features_list
-dump_classifier_and_data(clf, my_dataset, features_list)
+#dump_classifier_and_data(clf, my_dataset, features_list)
