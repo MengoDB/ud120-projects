@@ -1,4 +1,4 @@
-ud120-projects
+Enron Email project
 ==============
 
-Starter project code for students taking Udacity ud120
+This project is to find out people of interest from Enron Email and financial data.
