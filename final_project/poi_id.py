@@ -16,7 +16,7 @@ from tester import dump_classifier_and_data, test_classifier
 
 
 
-features_list = ['poi', 'salary']  # You will need to use more features
+features_list = ['poi', 'salary','deferral_payments','fraction_to_poi','fraction_from_poi']  # You will need to use more features
 
 features_list_all = [  # financial features
                        'salary', 'deferral_payments', 'total_payments', 'loan_advances', 'bonus',
@@ -27,20 +27,7 @@ features_list_all = [  # financial features
                        'shared_receipt_with_poi', 'fraction_to_poi', 'fraction_from_poi', 'text_learn_pred'
 ]
 
-### Load the dictionary containing the dataset
-with open("final_project_dataset.pkl", "r") as data_file:
-    data_dict = pickle.load(data_file)
 
-    ### Task 2: Remove outliers
-    data_dict.pop('TOTAL',0)
-
-    ### Task 3: Create new feature(s)
-    ### Store to my_dataset for easy export below.
-    my_dataset = data_dict
-
-    ### Extract features and labels from dataset for local testing
-    data = featureFormat(my_dataset, features_list, sort_keys=True)
-    labels, features = targetFeatureSplit(data)
 
 
 def computeFraction(poi_messages, all_messages):
@@ -66,25 +53,44 @@ def computeFraction(poi_messages, all_messages):
 
     return fraction
 
+def AddFeature(dataset):
+    submit_dict = {}
+    for name in dataset:
+        data_point = dataset[name]
 
-submit_dict = {}
-for name in data_dict:
-    data_point = data_dict[name]
+        # print
+        from_poi_to_this_person = data_point["from_poi_to_this_person"]
+        to_messages = data_point["to_messages"]
+        fraction_from_poi = computeFraction(from_poi_to_this_person, to_messages)
+        # print fraction_from_poi
+        data_point["fraction_from_poi"] = fraction_from_poi
 
-    # print
-    from_poi_to_this_person = data_point["from_poi_to_this_person"]
-    to_messages = data_point["to_messages"]
-    fraction_from_poi = computeFraction(from_poi_to_this_person, to_messages)
-    # print fraction_from_poi
-    data_point["fraction_from_poi"] = fraction_from_poi
+        from_this_person_to_poi = data_point["from_this_person_to_poi"]
+        from_messages = data_point["from_messages"]
+        fraction_to_poi = computeFraction(from_this_person_to_poi, from_messages)
+        #print fraction_to_poi
+        submit_dict[name] = {"fraction_from_poi": fraction_from_poi,
+                             "fraction_to_poi": fraction_to_poi}
+        data_point["fraction_to_poi"] = fraction_to_poi
+    return dataset
 
-    from_this_person_to_poi = data_point["from_this_person_to_poi"]
-    from_messages = data_point["from_messages"]
-    fraction_to_poi = computeFraction(from_this_person_to_poi, from_messages)
-    #print fraction_to_poi
-    submit_dict[name] = {"from_poi_to_this_person": fraction_from_poi,
-                         "from_this_person_to_poi": fraction_to_poi}
-    data_point["fraction_to_poi"] = fraction_to_poi
+
+### Load the dictionary containing the dataset
+with open("final_project_dataset.pkl", "r") as data_file:
+    data_dict = pickle.load(data_file)
+
+    ### Task 2: Remove outliers
+    data_dict.pop('TOTAL',0)
+    data_dict.pop('THE TRAVEL AGENCY IN THE PARK', 0)
+
+    ### Task 3: Create new feature(s)
+    ### Store to my_dataset for easy export below.
+    my_dataset = data_dict
+    my_dataset = AddFeature(my_dataset)
+    ### Extract features and labels from dataset for local testing
+    data = featureFormat(my_dataset, features_list, sort_keys=True)
+    labels, features = targetFeatureSplit(data)
+
 
 
 
@@ -112,7 +118,7 @@ def KNN(feature_list, dataset):
     estimators = [('scale', StandardScaler()), ('knn', knn)]
     clf = Pipeline(estimators)
     test_classifier(clf, dataset, feature_list)
-
+    return clf
 
 def GaussianNB(feature_list, dataset):
     from sklearn.naive_bayes import GaussianNB
@@ -120,6 +126,19 @@ def GaussianNB(feature_list, dataset):
     clf = GaussianNB()
     test_classifier(clf, dataset, feature_list)
     #score = clf.
+    return clf
+
+def Kmeans(feature_list,dataset):
+    from sklearn.cluster import KMeans
+    clf = KMeans(n_clusters=2, tol=0.001)
+    test_classifier(clf,dataset,feature_list)
+    return clf
+
+def RandomForest(feature_list,dataset):
+    from sklearn.ensemble import RandomForestClassifier
+    clf = RandomForestClassifier()
+    test_classifier(clf,dataset,feature_list)
+    return clf
 
 def tuneDT(feature_list, dataset):
 
@@ -131,13 +150,41 @@ def tuneDT(feature_list, dataset):
     tree_clf = tree.DecisionTreeClassifier()
     parameters = {'criterion': ('gini', 'entropy'),
                   'splitter': ('best', 'random')}
-    clf = GridSearchCV(tree_clf, parameters, scoring='accuracy')
+    clf = GridSearchCV(tree_clf, parameters, scoring='recall')
     test_classifier(clf, dataset, feature_list)
     print '###best_params'
     print clf.best_params_
     return clf.best_estimator_
 
+def tuneKNN(feature_list, dataset):
+    from sklearn.neighbors import KNeighborsClassifier
+    from sklearn.pipeline import Pipeline
+    from sklearn.preprocessing import StandardScaler
+    from sklearn.grid_search import GridSearchCV
 
+    knn = KNeighborsClassifier()
+    # feature scale
+    estimators = [('scale', StandardScaler()), ('knn', knn)]
+    pipeline = Pipeline(estimators)
+    parameters = {'knn__n_neighbors': [1, 8],
+                  'knn__algorithm': ('ball_tree', 'kd_tree', 'brute', 'auto')}
+    clf = GridSearchCV(pipeline, parameters, scoring='recall')
+    test_classifier(clf, dataset, feature_list)
+    print '###best_params'
+    print clf.best_params_
+    return clf.best_estimator_
+
+def tuneKmeans(feature_list,dataset):
+    from sklearn.cluster import KMeans
+    from sklearn.grid_search import GridSearchCV
+    km_clf = KMeans(n_clusters=2, tol=0.001)
+
+    parameters = {'n_clusters': (2,10)}
+    clf = GridSearchCV(km_clf, parameters, scoring='accuracy')
+    test_classifier(clf, dataset, feature_list)
+    print '###best_params'
+    print clf.best_params_
+    return clf.best_estimator_
 
 ### Task 5: Tune your classifier to achieve better than .3 precision and recall 
 ### using our testing script. Check the tester.py script in the final project
@@ -161,7 +208,13 @@ def tuneDT(feature_list, dataset):
 if __name__ == '__main__':
     clf = decisionTree(features_list,my_dataset)
     clf = tuneDT(features_list,my_dataset)
-    dump_classifier_and_data(clf, my_dataset, features_list)
+    clf = GaussianNB(features_list,my_dataset)
+    clf = KNN(features_list,my_dataset)
+    clf = tuneKNN(features_list,my_dataset)
+    #clf = Kmeans(features_list,my_dataset)
+    #clf = tuneKmeans(features_list,my_dataset)
+    clf = RandomForest(features_list,my_dataset)
+    #dump_classifier_and_data(clf, my_dataset, features_list)
 
 
 

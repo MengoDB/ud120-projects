@@ -198,7 +198,6 @@ def tuneKNN(feature_list, dataset):
     from sklearn.pipeline import Pipeline
     from sklearn.preprocessing import StandardScaler
     from sklearn.grid_search import GridSearchCV
-
     knn = KNeighborsClassifier()
     # feature scale
     estimators = [('scale', StandardScaler()), ('knn', knn)]
