@@ -16,7 +16,9 @@ from tester import dump_classifier_and_data, test_classifier
 
 
 
-features_list = ['poi', 'salary','deferral_payments','fraction_to_poi','fraction_from_poi']  # You will need to use more features
+features_list = ['poi', 'salary', 'bonus', 'total_stock_value', 'expenses',
+                       'exercised_stock_options', 'restricted_stock',
+                       'fraction_to_poi','fraction_from_poi']  # You will need to use more features
 
 features_list_all = [  # financial features
                        'salary', 'deferral_payments', 'total_payments', 'loan_advances', 'bonus',
@@ -154,6 +156,7 @@ def tuneDT(feature_list, dataset):
     test_classifier(clf, dataset, feature_list)
     print '###best_params'
     print clf.best_params_
+    test_classifier(clf.best_estimator_,dataset,feature_list)
     return clf.best_estimator_
 
 def tuneKNN(feature_list, dataset):
