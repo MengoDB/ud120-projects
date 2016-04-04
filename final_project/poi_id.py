@@ -217,6 +217,10 @@ if __name__ == '__main__':
     #clf = Kmeans(features_list,my_dataset)
     #clf = tuneKmeans(features_list,my_dataset)
     clf = RandomForest(features_list,my_dataset)
+
+    ##Choose final classifier model
+
+    final_clf = decisionTree(features_list,my_dataset)
     #dump_classifier_and_data(clf, my_dataset, features_list)
 
 

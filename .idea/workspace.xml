@@ -3,6 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="5ec7edfe-f91d-4ecd-8f29-ce578a7601da" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/final_project/poi_id.py" afterPath="$PROJECT_DIR$/final_project/poi_id.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="ud120-projects.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -29,8 +30,8 @@
       <file leaf-file-name="poi_id.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/final_project/poi_id.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.60078275" vertical-offset="3433" max-vertical-offset="3944">
-              <caret line="221" column="0" selection-start-line="221" selection-start-column="0" selection-end-line="221" selection-end-column="0" />
+            <state vertical-scroll-proportion="0.9334638" vertical-offset="3280" max-vertical-offset="4012">
+              <caret line="222" column="54" selection-start-line="222" selection-start-column="54" selection-end-line="222" selection-end-column="54" />
               <folding />
             </state>
           </provider>
@@ -404,8 +405,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/final_project/poi_id.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.60078275" vertical-offset="3433" max-vertical-offset="3944">
-          <caret line="221" column="0" selection-start-line="221" selection-start-column="0" selection-end-line="221" selection-end-column="0" />
+        <state vertical-scroll-proportion="0.9334638" vertical-offset="3280" max-vertical-offset="4012">
+          <caret line="222" column="54" selection-start-line="222" selection-start-column="54" selection-end-line="222" selection-end-column="54" />
           <folding />
         </state>
       </provider>
