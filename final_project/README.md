@@ -79,7 +79,7 @@ DecisionTreeClassifier(compute\_importances=None, criterion='gini',
 ### Gaussian Naive Bayes
 
 ```python
-from sklearn.naive\_bayes import GaussianNB
+from sklearn.naive_bayes import GaussianNB
 clf = GaussianNB()
 ```
 
@@ -125,10 +125,10 @@ I used grid search to automatically tune the KNN model and Decision Tree model.
 ### Decision Tree Tuning
 
 ```python
-from sklearn.grid\_search import GridSearchCV
+from sklearn.grid_search import GridSearchCV
 from sklearn import tree
 
-tree\_clf = tree.DecisionTreeClassifier()
+tree_clf = tree.DecisionTreeClassifier()
 parameters = {'criterion': ('gini', 'entropy'),
               'splitter': ('best', 'random')}
 clf = GridSearchCV(tree\_clf, parameters, scoring='recall')
@@ -165,14 +165,14 @@ DecisionTreeClassifier(compute\_importances=None, criterion='entropy',
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
-from sklearn.grid\_search import GridSearchCV
+from sklearn.grid_search import GridSearchCV
 
 knn = KNeighborsClassifier()
 
 estimators = [('scale', StandardScaler()), ('knn', knn)]
 pipeline = Pipeline(estimators)
-parameters = {'knn\_\_n\_neighbors': [1, 8],
-              'knn\_\_algorithm': ('ball\_tree', 'kd\_tree', 'brute', 'auto')}
+parameters = {'knn__n_neighbors': [1, 8],
+              'knn__algorithm': ('ball_tree', 'kd_tree', 'brute', 'auto')}
 clf = GridSearchCV(pipeline, parameters, scoring='recall')
 
 ```
@@ -232,15 +232,15 @@ The whole dataset we have includes only 146 data points, which is very small. So
 
 ### Precision
 
-0.34
+0.39
 
-Precision, referred as positive predictive value, here indicated that 34% of people who are predicted as poi are truly people of interests.
+Precision, referred as positive predictive value, here indicated that 39% of people who are predicted as poi are truly people of interests.
 
 ### Recall
 
-0.32
+0.34
 
-Recall, referred as true positive rate or sensitivity, here indicated that among people of interests, 32% of them are correctly predicted via our final algorithm.
+Recall, referred as true positive rate or sensitivity, here indicated that among people of interests, 34% of them are correctly predicted via our final algorithm.
 
 
 
