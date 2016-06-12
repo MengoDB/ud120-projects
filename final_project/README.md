@@ -131,7 +131,7 @@ from sklearn import tree
 tree_clf = tree.DecisionTreeClassifier()
 parameters = {'criterion': ('gini', 'entropy'),
               'splitter': ('best', 'random')}
-clf = GridSearchCV(tree\_clf, parameters, scoring='recall')
+clf = GridSearchCV(tree_clf, parameters, scoring='recall')
 ```
 
 
